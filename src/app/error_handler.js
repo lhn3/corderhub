@@ -13,6 +13,14 @@ const errorHandler=(error,ctx)=>{
             status=409
             message='此用户名已存在！'
             break
+        case errorType.USER_NOT_EXISTS:
+            status=400
+            message='此用户不存在！'
+            break
+        case errorType.PASSWORD_ERROR:
+            status=400
+            message='密码错误！'
+            break
         default:
             status=400
             message='NOT FOUND'
