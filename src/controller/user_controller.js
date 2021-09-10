@@ -3,7 +3,9 @@
 //导入数据库操作内容
 const service=require('../service/user_service')
 
+//创建用户中间件
 class UserController {
+    //创建用户方法
     async create(ctx,next){
         //获取用户参数
         let user=ctx.request.body

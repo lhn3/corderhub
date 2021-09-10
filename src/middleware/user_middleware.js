@@ -4,7 +4,10 @@
 const service=require('../service/user_service')
 //导入错误类型
 const errorType=require('../constants/error_type')
+//导入密码加密模块
+const {md5password}=require('../utils/handel_password')
 
+//验证用户名密码中间件
 const verifyUser=async (ctx,next)=>{
     //取出数据
     const {username,password}=ctx.request.body
@@ -27,8 +30,17 @@ const verifyUser=async (ctx,next)=>{
     await next()
 }
 
+//密码加密中间件
+const handlePassword=async (ctx,next)=>{
+    let {password}=ctx.request.body
+    //密码加密
+    ctx.request.body.password=md5password(password)
+    await next()
+}
+
 
 
 module.exports={
-    verifyUser
+    verifyUser,
+    handlePassword
 }
