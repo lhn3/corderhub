@@ -14,6 +14,4 @@ userRouter.post('/register',verifyUser,handlePassword,create)
 
 
 
-module.exports={
-    userRouter
-}
+module.exports=userRouter

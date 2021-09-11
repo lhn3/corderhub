@@ -10,6 +10,4 @@ const authRouter=new Router({prefix:'/user'})
 authRouter.post('/login',verifyLogin,login)
 
 
-module.exports={
-    authRouter
-}
+module.exports=authRouter

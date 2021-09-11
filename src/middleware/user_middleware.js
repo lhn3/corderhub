@@ -34,7 +34,8 @@ const verifyUser=async (ctx,next)=>{
 const handlePassword=async (ctx,next)=>{
     let {password}=ctx.request.body
     //密码加密
-    ctx.request.body.password=md5password(password)
+    // ctx.request.body.password=md5password(password)
+    ctx.request.body.password=password
     await next()
 }
 

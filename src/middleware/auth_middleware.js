@@ -21,8 +21,8 @@ const verifyLogin=async (ctx,next)=>{
     }
 
     //验证密码是否正确
-    console.log(md5password(password));
-    if (md5password(password) !== user.password){
+    // if (md5password(password) !== user.password){
+    if (password !== user.password){
         const error=new Error(errorType.PASSWORD_ERROR)
         return ctx.app.emit('error',error,ctx)
     }
