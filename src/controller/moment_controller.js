@@ -29,6 +29,16 @@ class MomentController{
         console.log('查询成功')
         ctx.body=result
     }
+
+    //修改动态
+    async update(ctx,next){
+        const {momentId}=ctx.params
+        const {content}=ctx.request.body
+        //权限认证通过修改动态
+        const result=await service.update(momentId,content)
+        ctx.body=result
+        console.log('修改动态成功')
+    }
 }
 
 

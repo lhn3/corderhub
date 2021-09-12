@@ -25,6 +25,10 @@ const errorHandler=(error,ctx)=>{
             status=401
             message='无效token！'
             break
+        case errorType.UNPERMISSION:
+            status=401
+            message='无权操作！'
+            break
         default:
             status=400
             message='NOT FOUND'

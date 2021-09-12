@@ -3,6 +3,7 @@ const errorType=require('../constants/error_type')
 const service=require('../service/user_service')
 const {md5password}=require('../utils/handel_password')
 const {PUBLIC_KEY}=require('../app/config')
+const authService=require('../service/auth_service')
 
 //校验登录
 const verifyLogin=async (ctx,next)=>{
@@ -38,7 +39,6 @@ const verifyLogin=async (ctx,next)=>{
 const verifyAuth=async (ctx,next)=>{
     const authorization=ctx.headers.authorization
     if(!authorization){
-        console.log('00000')
         const error=new Error(errorType.UNAUTHORIZATION)
         return ctx.app.emit('error',error,ctx)
     }
@@ -61,7 +61,22 @@ const verifyAuth=async (ctx,next)=>{
 
 }
 
+//权限验证
+const permission=async (ctx,next)=>{
+    const {momentId}=ctx.params
+    const userId=ctx.user.id
+    //通过数据库查看权限
+    const result=await authService.checkMoment(momentId,userId)
+    //没有权限抛出错误
+    if (!result.length){
+        const error=new Error(errorType.UNPERMISSION)
+        return ctx.app.emit('error',error,ctx)
+    }
+    await next()
+}
+
 module.exports={
     verifyLogin,
-    verifyAuth
+    verifyAuth,
+    permission
 }

@@ -37,6 +37,13 @@ class MomentService {
         const result = await connention.execute(statement, [offset,size])
         return result[0]
     }
+
+    //修改动态
+    async update(momentId,content){
+        const statement = `UPDATE moment SET content=? WHERE id=?;`
+        const result = await connention.execute(statement, [content,momentId])
+        return result
+    }
 }
 
 
