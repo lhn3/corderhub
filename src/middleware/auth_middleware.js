@@ -15,6 +15,7 @@ const verifyLogin=async (ctx,next)=>{
     //获取一个用户数组
     const result=await service.getUser(username)
     const user=result[0]
+    console.log(user)
     if (!user){
         const error=new Error(errorType.USER_NOT_EXISTS)
         return ctx.app.emit('error',error,ctx)
@@ -26,6 +27,7 @@ const verifyLogin=async (ctx,next)=>{
         const error=new Error(errorType.PASSWORD_ERROR)
         return ctx.app.emit('error',error,ctx)
     }
+    ctx.user=user
     await next()
 }
 
