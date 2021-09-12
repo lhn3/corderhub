@@ -62,17 +62,19 @@ const verifyAuth=async (ctx,next)=>{
 }
 
 //权限验证
-const permission=async (ctx,next)=>{
-    const {momentId}=ctx.params
-    const userId=ctx.user.id
-    //通过数据库查看权限
-    const result=await authService.checkMoment(momentId,userId)
-    //没有权限抛出错误
-    if (!result.length){
-        const error=new Error(errorType.UNPERMISSION)
-        return ctx.app.emit('error',error,ctx)
+const permission=(tableName)=>{
+    return async (ctx,next)=>{
+        const tableId=Object.values(ctx.params)[0]
+        const userId=ctx.user.id
+        //通过数据库查看权限
+        const result=await authService.check(tableName,tableId,userId)
+        //没有权限抛出错误
+        if (!result.length){
+            const error=new Error(errorType.UNPERMISSION)
+            return ctx.app.emit('error',error,ctx)
+        }
+        await next()
     }
-    await next()
 }
 
 module.exports={
