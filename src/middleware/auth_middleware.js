@@ -36,7 +36,14 @@ const verifyLogin=async (ctx,next)=>{
 
 //校验token授权
 const verifyAuth=async (ctx,next)=>{
-    const token=ctx.headers.authorization.replace('Bearer ','')
+    const authorization=ctx.headers.authorization
+    if(!authorization){
+        console.log('00000')
+        const error=new Error(errorType.UNAUTHORIZATION)
+        return ctx.app.emit('error',error,ctx)
+    }
+    const token=authorization.replace('Bearer ','')
+
     //解析token
     try{
         const result=jwt.verify(token,PUBLIC_KEY,{
@@ -44,6 +51,8 @@ const verifyAuth=async (ctx,next)=>{
             algorithm:['RS256']
         })
         console.log(result)
+        //同一个路由中的中间件才能相互访问ctx中参数，所以要为校验后的中间件带过去需要的数据
+        ctx.user=result
         await next()
     }catch (e) {
         const error=new Error(errorType.UNAUTHORIZATION)
