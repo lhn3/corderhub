@@ -39,6 +39,15 @@ class MomentController{
         ctx.body=result
         console.log('修改动态成功')
     }
+
+    //删除动态
+    async del(ctx,next){
+        const {momentId}=ctx.params
+        //权限认证通过删除动态
+        const result=await service.del(momentId)
+        ctx.body=result
+        console.log('删除成功')
+    }
 }
 
 

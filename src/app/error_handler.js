@@ -27,7 +27,7 @@ const errorHandler=(error,ctx)=>{
             break
         case errorType.UNPERMISSION:
             status=401
-            message='无权操作！'
+            message='操作失败！'
             break
         default:
             status=400
