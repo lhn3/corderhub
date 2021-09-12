@@ -1,7 +1,10 @@
+const jwt=require('jsonwebtoken')
 const errorType=require('../constants/error_type')
 const service=require('../service/user_service')
 const {md5password}=require('../utils/handel_password')
+const {PUBLIC_KEY}=require('../app/config')
 
+//校验登录
 const verifyLogin=async (ctx,next)=>{
     const {username,password}=ctx.request.body
 
@@ -31,6 +34,25 @@ const verifyLogin=async (ctx,next)=>{
     await next()
 }
 
+//校验token授权
+const verifyAuth=async (ctx,next)=>{
+    const token=ctx.headers.authorization.replace('Bearer ','')
+    //解析token
+    try{
+        const result=jwt.verify(token,PUBLIC_KEY,{
+            //解密方式
+            algorithm:['RS256']
+        })
+        console.log(result)
+        await next()
+    }catch (e) {
+        const error=new Error(errorType.UNAUTHORIZATION)
+        ctx.app.emit('error',error,ctx)
+    }
+
+}
+
 module.exports={
-    verifyLogin
+    verifyLogin,
+    verifyAuth
 }
