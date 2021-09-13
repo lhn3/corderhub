@@ -9,17 +9,22 @@ class MomentService {
     }
 
     //查一条
-    async getMoment(userId) {
+    async getMoment(momentId) {
         const statement = `
         SELECT 
         m.id id,m.content content,m.createAt createtime,m.updateAt updatetime,
-        JSON_OBJECT('id',u.id,'name',u.name) user
+        JSON_OBJECT('id',u.id,'name',u.name) user,
+        JSON_ARRAYAGG(
+        JSON_OBJECT('id',c.id,'content',c.content,'createTime',c.createAt,
+        'commentId',c.comment_id,'user',JSON_OBJECT('id',uu.id,'name',uu.name))
+        ) comments
         FROM moment m
-        LEFT JOIN users u
-        ON m.user_id=u.id
+        LEFT JOIN users u ON m.user_id=u.id
+        LEFT JOIN comment c ON m.id=c.moment_id
+        LEFT JOIN users uu ON c.user_id=uu.id
         WHERE m.id=?;
         `
-        const result = await connection.execute(statement, [userId])
+        const result = await connection.execute(statement, [momentId])
         return result[0][0]
     }
 
@@ -28,7 +33,8 @@ class MomentService {
         const statement = `
         SELECT 
         m.id id,m.content content,m.createAt createtime,m.updateAt updatetime,
-        JSON_OBJECT('id',u.id,'name',u.name) user
+        JSON_OBJECT('id',u.id,'name',u.name) user,
+        (SELECT COUNT(*) FROM comment c WHERE c.moment_id=m.id ) commentCount
         FROM moment m
         LEFT JOIN users u
         ON m.user_id=u.id

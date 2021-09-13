@@ -37,6 +37,14 @@ class CommentController {
         ctx.body=result
     }
 
+    //获取评论
+    async getComments(ctx,next){
+        const {momentId}=ctx.query
+        const result=await service.getComments(momentId)
+        console.log('获取评论成功')
+        ctx.body=result
+    }
+
 }
 
 module.exports=new CommentController()

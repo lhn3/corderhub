@@ -13,9 +13,9 @@ class MomentController{
 
     //查询一条
     async getMoment(ctx,next){
-        const userId=ctx.params.momentId
+        const momentId=ctx.params.momentId
         //查询数据库
-        const result=await service.getMoment(userId)
+        const result=await service.getMoment(momentId)
         console.log('查询成功')
         ctx.body=result
     }
