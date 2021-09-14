@@ -36,8 +36,8 @@ class MomentController{
         const {content}=ctx.request.body
         //权限认证通过修改动态
         const result=await service.update(momentId,content)
-        ctx.body=result
         console.log('修改动态成功')
+        ctx.body=result
     }
 
     //删除动态
@@ -45,8 +45,24 @@ class MomentController{
         const {momentId}=ctx.params
         //权限认证通过删除动态
         const result=await service.del(momentId)
-        ctx.body=result
         console.log('删除成功')
+        ctx.body=result
+    }
+
+    //选择标签
+    async selectLabels(ctx,next){
+        const labelIds=ctx.labelIds
+        const {momentId}=ctx.params
+        for(let labelId of labelIds){
+            //
+            const result=await service.hasLabel(momentId,labelId)
+            if (!result.length){
+                //没有选择过的标签采取选择
+                await service.selectLabels(momentId,labelId)
+            }
+        }
+        console.log('选择标签成功')
+        ctx.body='选择标签成功！'
     }
 }
 

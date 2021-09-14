@@ -56,6 +56,20 @@ class MomentService {
         const result = await connection.execute(statement, [momentId])
         return result[0]
     }
+
+    //判断标签是否选择过
+    async hasLabel(momentId,labelId){
+        const statement = `SELECT * FROM moment_labels WHERE moment_id=? AND label_id=?;`
+        const result = await connection.execute(statement, [momentId,labelId])
+        return result[0]
+    }
+
+    //选择标签
+    async selectLabels(momentId,labelId){
+        const statement = `INSERT INTO moment_labels (moment_id,label_id) VALUES (?,?);`
+        const result = await connection.execute(statement, [momentId,labelId])
+        return result[0]
+    }
 }
 
 
