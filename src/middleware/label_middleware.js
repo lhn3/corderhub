@@ -1,5 +1,6 @@
 const service=require('../service/label_service')
 const checkLabels=async (ctx,next)=>{
+    //获取传入的标签数组
     const {labels}=ctx.request.body
 
     let labelsList=[]

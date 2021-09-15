@@ -10,19 +10,26 @@ class MomentService {
 
     //查一条
     async getMoment(momentId) {
+        //子查询，防止数据重复
         const statement = `
         SELECT 
         m.id id,m.content content,m.createAt createtime,m.updateAt updatetime,
         JSON_OBJECT('id',u.id,'name',u.name) user,
-        JSON_ARRAYAGG(
+        IF(COUNT(l.id),JSON_ARRAYAGG(
+        JSON_OBJECT('id',l.id,'label',l.label)\t
+        ) ,NULL) labels,
+        (SELECT 
+        IF(COUNT(c.id),JSON_ARRAYAGG(
         JSON_OBJECT('id',c.id,'content',c.content,'createTime',c.createAt,
         'commentId',c.comment_id,'user',JSON_OBJECT('id',uu.id,'name',uu.name))
+        ) ,NULL) FROM comment c LEFT JOIN users uu ON c.user_id=uu.id WHERE c.moment_id=m.id
         ) comments
         FROM moment m
         LEFT JOIN users u ON m.user_id=u.id
-        LEFT JOIN comment c ON m.id=c.moment_id
-        LEFT JOIN users uu ON c.user_id=uu.id
-        WHERE m.id=?;
+        LEFT JOIN moment_labels ml ON ml.moment_id=m.id
+        LEFT JOIN labels l ON l.id=ml.label_id
+        WHERE m.id=?
+        GROUP BY m.id;
         `
         const result = await connection.execute(statement, [momentId])
         return result[0][0]
@@ -34,7 +41,8 @@ class MomentService {
         SELECT 
         m.id id,m.content content,m.createAt createtime,m.updateAt updatetime,
         JSON_OBJECT('id',u.id,'name',u.name) user,
-        (SELECT COUNT(*) FROM comment c WHERE c.moment_id=m.id ) commentCount
+        (SELECT COUNT(*) FROM comment c WHERE c.moment_id=m.id ) commentCount,
+        (SELECT count(*) FROM moment_labels ml WHERE ml.moment_id=m.id) labelsCount
         FROM moment m
         LEFT JOIN users u
         ON m.user_id=u.id
