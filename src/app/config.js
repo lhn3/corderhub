@@ -14,6 +14,7 @@ const PUBLIC_KEY=fs.readFileSync(path.resolve(__dirname,'./KEY/public.key'))    
 
 //结构导出
 module.exports={
+    APP_HOST,
     APP_PORT,
     MYSQL_HOST,
     MYSQL_PORT,

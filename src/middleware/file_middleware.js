@@ -1,10 +1,11 @@
 const multer=require('koa-multer')
 
+const {AVATAR_PATCH}=require('../constants/file_type')
 //头像上传
 const storage=multer.diskStorage({
     //上传地址
     destination:(request,file,callback)=>{
-        callback(null,'./uploads/avatars')
+        callback(null,AVATAR_PATCH)
     },
     //上传文件名
     filename:(request,file,callback)=>{
