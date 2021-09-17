@@ -21,6 +21,17 @@ class FileController {
         ctx.body='头像上传成功'
     }
 
+    //配图上传
+    async pictureInfo(ctx,next){
+        const {momentId}=ctx.params
+        const {id}=ctx.user
+        const files=ctx.req.files
+        for(let file of files){
+            await service.createPicture(file.filename,file.mimetype,file.size,id,momentId)
+        }
+        ctx.body='配图上传成功'
+    }
+
 }
 
 module.exports=new FileController()

@@ -29,6 +29,13 @@ class FileService {
         return result
     }
 
+    //上传配图
+    async createPicture(filename,mimetype,size,userId,momentId){
+        const statement='INSERT INTO picture (filename,mimetype,size,user_id,moment_id) VALUES (?,?,?,?,?);'
+        const result=await connection.execute(statement,[filename,mimetype,size,userId,momentId])
+        return result
+    }
+
 }
 
 module.exports=new FileService()
