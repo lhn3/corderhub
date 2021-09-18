@@ -1,4 +1,7 @@
+const fs=require('fs')
 const service=require('../service/moment_service')
+const fileService=require('../service/file_service')
+const {PICTURE_PATCH}=require('../constants/file_type')
 
 class MomentController{
     //创建
@@ -63,6 +66,26 @@ class MomentController{
         }
         console.log('选择标签成功')
         ctx.body='选择标签成功！'
+    }
+
+    //获取配图
+    async momentImg(ctx,next){
+        const {filename}=ctx.params
+        const {type}=ctx.query
+        const result=await fileService.getPicture(filename)
+
+        //设置响应
+        ctx.response.set('content-type',result.mimetype)
+        //展示头像
+        if (type==='large'){
+            ctx.body=fs.createReadStream(`${PICTURE_PATCH}/large-${filename}`)
+        }if(type==='middle') {
+            ctx.body=fs.createReadStream(`${PICTURE_PATCH}/middle-${filename}`)
+        }if(type==='small') {
+            ctx.body=fs.createReadStream(`${PICTURE_PATCH}/small-${filename}`)
+        }else {
+            ctx.body=fs.createReadStream(`${PICTURE_PATCH}/${filename}`)
+        }
     }
 }
 

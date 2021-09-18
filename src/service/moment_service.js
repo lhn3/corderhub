@@ -23,7 +23,11 @@ class MomentService {
         JSON_OBJECT('id',c.id,'content',c.content,'createTime',c.createAt,
         'commentId',c.comment_id,'user',JSON_OBJECT('id',uu.id,'name',uu.name,'avatar',uu.avatar_url))
         ) ,NULL) FROM comment c LEFT JOIN users uu ON c.user_id=uu.id WHERE c.moment_id=m.id
-        ) comments
+        ) comments,
+        (SELECT 
+        JSON_ARRAYAGG(CONCAT('http://localhost:8000/moment/images/',p.filename))
+        FROM picture p WHERE p.moment_id=m.id
+        ) images
         FROM moment m
         LEFT JOIN users u ON m.user_id=u.id
         LEFT JOIN moment_labels ml ON ml.moment_id=m.id
@@ -42,7 +46,9 @@ class MomentService {
         m.id id,m.content content,m.createAt createtime,m.updateAt updatetime,
         JSON_OBJECT('id',u.id,'name',u.name) user,
         (SELECT COUNT(*) FROM comment c WHERE c.moment_id=m.id ) commentCount,
-        (SELECT count(*) FROM moment_labels ml WHERE ml.moment_id=m.id) labelsCount
+        (SELECT count(*) FROM moment_labels ml WHERE ml.moment_id=m.id) labelsCount,
+        (SELECT JSON_ARRAYAGG(CONCAT('http://localhost:8000/moment/images/',p.filename
+        )) FROM picture p WHERE p.moment_id=m.id) images
         FROM moment m
         LEFT JOIN users u
         ON m.user_id=u.id

@@ -1,5 +1,5 @@
 const Router=require('koa-router')
-const {create,getMoment,getMomentList,update,del,selectLabels}=require('../controller/moment_controller')
+const {create,getMoment,getMomentList,update,del,selectLabels,momentImg}=require('../controller/moment_controller')
 const {verifyAuth,permission}=require('../middleware/auth_middleware')
 const {checkLabels}=require('../middleware/label_middleware')
 
@@ -18,6 +18,8 @@ momentRouter.patch('/:momentId',verifyAuth,permission('moment'),update)
 momentRouter.delete('/:momentId',verifyAuth,permission('moment'),del)
 //选择标签
 momentRouter.post('/:momentId/labels',verifyAuth,permission('moment'),checkLabels,selectLabels)
+//获取展示配图
+momentRouter.get('/images/:filename',momentImg)
 
 
 module.exports=momentRouter

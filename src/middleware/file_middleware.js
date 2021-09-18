@@ -1,4 +1,6 @@
 const multer=require('koa-multer')
+const jimp=require('jimp')
+const path=require('path')
 
 const {AVATAR_PATCH,PICTURE_PATCH}=require('../constants/file_type')
 
@@ -36,7 +38,24 @@ const picture=multer({
 
 const pictureUpload=picture.array('picture',9)
 
+
+//更改图片大小------------------------------------------------------------------------
+const pictureResize=async (ctx,next)=>{
+    //获取所有图片信息
+    const files=ctx.req.files
+    for(let file of files){
+        //读取文件并写入新文件
+        jimp.read(file.path).then(image=>{
+            image.resize(1280,jimp.AUTO).write(path.join(file.destination, `large-${file.filename}`))
+            image.resize(640,jimp.AUTO).write(path.join(file.destination, `middle-${file.filename}`))
+            image.resize(320,jimp.AUTO).write(path.join(file.destination, `small-${file.filename}`))
+        })
+    }
+    await next()
+}
+
 module.exports= {
     avatarUpload,
-    pictureUpload
+    pictureUpload,
+    pictureResize
 }
